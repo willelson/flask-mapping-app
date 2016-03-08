@@ -2,6 +2,10 @@ from app import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column('username', db.String(20), unique=True , index=True)
+
+    def __init__(self , username):
+        self.username = username
 
     @property
     def is_authenticated(self):
