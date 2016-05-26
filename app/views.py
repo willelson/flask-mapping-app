@@ -23,7 +23,7 @@ def before_request():
 
 @app.route('/')
 @app.route('/index')
-# @login_required
+@login_required
 def index():
     return render_template('index.html')
 
@@ -36,7 +36,7 @@ def login():
 		return redirect(url_for('index'))
 	form = LoginForm()
 	if form.validate_on_submit(): 
-		username = form.username.data
+		username = form.username.data.strip()
 		password = form.password.data
 		user = User.query.filter_by(username=username).first()
 		if user is not None:

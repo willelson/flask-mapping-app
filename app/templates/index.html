@@ -10,6 +10,7 @@ html { height: 100% }
 body { height: 100% }
 #map_canvas { height: 90% }
 </style>
+<link rel="stylesheet" type="text/css" href="static/main.css"/> 
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
 
 <script>
@@ -471,6 +472,14 @@ body { height: 100% }
 </script>
 </head>
 <body>
-	<div id="map_canvas"></div>
+<div id='main'>
+    <div id='left'>
+    	<h5>Sidebar</h5>
+    </div>
+    <div id='right'>
+    	<div id="map_canvas"></div>
+    </div>
+</div>
+	
 </body>
 {% endblock %}

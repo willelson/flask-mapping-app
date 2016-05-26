@@ -16,14 +16,8 @@ class User(db.Model):
         self.email = email
         self.registered_on = datetime.now()
 
-    # def set_password(self, password):
-    #     self.pw_hash = generate_password_hash(password)
-
-    # def check_password(self, password):
-    #     return check_password_hash(self.password, password)
     def check_password(self, password):
-        # return password == self.password
-        return check_password_hash(self.password, password)
+            return check_password_hash(self.password, password)
 
     @property
     def is_authenticated(self):
