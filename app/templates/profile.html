@@ -4,4 +4,11 @@
 	<p>Username: {{ current_user.username }}</p>
 	<p>Email: {{ current_user.email }}</p>
 	<p>Member since: {{ current_user.registered_on.strftime("%d/%m/%Y") }}</p>
+
+	{% if current_user.routes.all()|length > 1 %}
+		<h4>Routes</h4>
+		{% for route in current_user.routes %}
+			<p>{{ route.name }}</p>
+		{% endfor %}
+	{% endif %}
 {% endblock %}

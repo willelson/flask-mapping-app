@@ -46,7 +46,14 @@ body { height: 100% }
 <body>
 <div id='main'>
     <div id='left'>
-		<h5>You have no routes</h5>
+    	{% if current_user.routes.all()|length > 1 %}
+    		<h4>Routes</h4>
+    		{% for route in current_user.routes %}
+    			<p>{{ route.name }}</p>
+    		{% endfor %}
+    	{% else %}
+		<h5>You have no routes</h5>				
+		{% endif %}
     </div>
     <div id='right'>
     	<div id="map_canvas"></div>

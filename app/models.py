@@ -64,5 +64,15 @@ class RouteInfo(db.Model):
 
 
 
+# >>> user = models.User.query.filter_by(username="will").first()
+# >>> route2 = models.Route(name="Ladybower", user=user)
+# >>> point1 = models.RouteInfo(longitude=53.3573457, latitude=-1.698183, elevation=203.4, route_id=route2.id)
+# >>> point2 = models.RouteInfo(longitude=53.3572457, latitude=-1.698209, elevation=203.8, route_id=route2.id)
+# >>> db.session.add(point1)
+# >>> db.session.add(point2)
+# >>> db.session.commit()
+# >>> print user.routes.all()
+
+
 
 #
