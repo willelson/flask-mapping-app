@@ -14,7 +14,6 @@ class User(db.Model):
     def __init__(self , username ,password , email):
         self.username = username
         self.password = generate_password_hash(password)
-        # self.set_password(password)
         self.email = email
         self.registered_on = datetime.now()
 
@@ -61,9 +60,6 @@ class RouteInfo(db.Model):
 
 
 
-
-
-
 # >>> user = models.User.query.filter_by(username="will").first()
 # >>> route2 = models.Route(name="Ladybower", user=user)
 # >>> point1 = models.RouteInfo(longitude=53.3573457, latitude=-1.698183, elevation=203.4, route_id=route2.id)
@@ -72,6 +68,8 @@ class RouteInfo(db.Model):
 # >>> db.session.add(point2)
 # >>> db.session.commit()
 # >>> print user.routes.all()
+
+
 
 
 

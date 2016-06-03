@@ -2,54 +2,23 @@
 
 {% block content %}
 <head>
-<title>Draw a polyline given many coordinates</title>
-
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<style type="text/css">
-html { height: 100% }
-body { height: 100% }
-#map_canvas { height: 90% }
-</style>
-<link rel="stylesheet" type="text/css" href="static/main.css"/> 
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
-
-<script>
-    function initialize() {
-        var homeLatlng = new google.maps.LatLng(51.476706,0);
-        var myOptions = {
-            zoom: 15,
-            center: homeLatlng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-
-        // create an array of coordinates
-        var arrCoords = [
-            new google.maps.LatLng(53.358647,-1.485686),
-            new google.maps.LatLng(53.358719,-1.485568)
-        ];
-        // draw the route on the map            
-        var route = new google.maps.Polyline({
-            path: arrCoords,
-            strokeColor: "#00FF00",
-            strokeOpacity: 1.0,
-            strokeWeight: 4,
-            geodesic: false,
-            map: map
-        }); 
-    }
-
-    google.maps.event.addDomListener(window, 'load', initialize);
-</script>
+	<title>Draw a polyline given many coordinates</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
+	<script src="{{url_for('static', filename='map3.js')}}"></script>
+    <script type="text/javascript">
+        var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+	<link rel="stylesheet" type="text/css" href="static/main.css"/> 
 </head>
 <body>
 <div id='main'>
     <div id='left'>
-    	{% if current_user.routes.all()|length > 1 %}
+    	{% if current_user.routes.all()|length > 0 %}
     		<h4>Routes</h4>
     		{% for route in current_user.routes %}
-    			<p>{{ route.name }}</p>
+    			<p><a href="#" class="route_name">{{ route.name }}</a></p>
     		{% endfor %}
     	{% else %}
 		<h5>You have no routes</h5>				

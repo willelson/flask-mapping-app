@@ -1,5 +1,5 @@
 
-body   {position:absolute; width:100%; height:100%;}
+body   {position:absolute; width:100%; height:92%;}
 #main  {position:absolute; height:100%; width:100%;}
 #left  {position:absolute; width:150px; height:100%; overflow:scroll;}
 #right {margin-left:151px; height:100%; overflow:scroll;}

@@ -5,10 +5,29 @@
 	<p>Email: {{ current_user.email }}</p>
 	<p>Member since: {{ current_user.registered_on.strftime("%d/%m/%Y") }}</p>
 
-	{% if current_user.routes.all()|length > 1 %}
+	{% if current_user.routes.all()|length > 0 %}
 		<h4>Routes</h4>
 		{% for route in current_user.routes %}
 			<p>{{ route.name }}</p>
 		{% endfor %}
 	{% endif %}
+
+	<h3>Upload</h3>
+
+<!--     <form action="" method="post" name="upload">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.route_name(size=50, placeholder="Route name") }}<br>
+            {{ form.file(size=50, placeholder="Choose File") }}<br>
+            <input type="submit" value="Submit">
+        </p>
+    </form> -->
+
+
+	<form action = "http://localhost:5000/uploader" method = "POST" 
+	enctype = "multipart/form-data" id="upload">
+		Route name: <input type="text" name="name" id="route_name"><br>
+		<input type = "file" name = "file" /><br>
+		<input type = "submit"/>
+	</form>
 {% endblock %}

@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, BooleanField
+from wtforms import StringField, BooleanField, FileField
 from wtforms.validators import DataRequired
 from wtforms.widgets import PasswordInput
 
@@ -21,3 +21,10 @@ class RegisterForm(Form):
 		Form.__init__(self, *args, **kwargs)
 		self.user = None
 
+class UploadForm(Form):
+	route_name = StringField('username', validators=[DataRequired()])
+	file = FileField('file', validators=[DataRequired()])
+
+	def __init__(self, *args, **kwargs):
+		Form.__init__(self, *args, **kwargs)
+		self.user = None
