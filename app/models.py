@@ -50,6 +50,12 @@ class Route(db.Model):
     route_info = db.relationship('RouteInfo', cascade="all, delete-orphan", backref='route', lazy='dynamic')
     name = db.Column('name' , db.String(10))
 
+    # Variables to describe the bound of the route
+    NElat = db.Column(db.Float)
+    NElng = db.Column(db.Float)
+    SWlat = db.Column(db.Float)
+    SWlng = db.Column(db.Float)
+
 class RouteInfo(db.Model):
     """One to many relationship with route"""
     id = db.Column(db.Integer, primary_key=True)

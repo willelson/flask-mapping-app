@@ -108,14 +108,30 @@ def upload_file():
 			gpx = gpxpy.parse(file) 
 			for track in gpx.tracks: 
 				new_route = Route(name=name, user=current_user)
-				db.session.add(new_route)
 				print "\n new_route.name = {0} \n".format(new_route.name)
 				for segment in track.segments: 
+					maxLat = segment.points[0].latitude;
+					minLat = segment.points[0].latitude;
+					maxLng = segment.points[0].longitude;
+					minLng = segment.points[0].longitude;
 					for point in segment.points:
-						
+						if point.latitude > maxLat:
+							maxLat = point.latitude
+						elif point.latitude < minLat:
+							minLat = point.latitude
+						if point.longitude > maxLat:
+							maxLng = point.longitude
+						elif point.longitude < minLat:
+							minLng = point.longitude
 						new_point = RouteInfo(longitude=point.longitude, latitude=point.latitude, 
 													 elevation=point.elevation, route=new_route)
 						db.session.add(new_point)
+				new_route.NElat = maxLat
+				new_route.NElng = minLng
+				new_route.SWlng = maxLng
+				new_route.SWlat = minLat
+				print "{0} | {1} | {2} | {3}".format(minLat, maxLng, minLng, maxLat)
+				db.session.add(new_route)
 			db.session.commit()
 			print "Upload successfull"
 			return redirect(url_for('login'))
@@ -127,36 +143,17 @@ def get_routes():
 	routes = {}
 	for route in current_user.routes:
 		routes[route.name] = []
-		for point in Route.query.filter_by(route=route).all():
-			print "({0},{1})".format(point.longitude, point.latitude)
-	return false
+		for point in RouteInfo.query.filter_by(route=route).all():
+			routes[route.name].append( (point.longitude, point.latitude) )
+		print route.name
+	return jsonify(result=routes)
 
-@app.route('/_get_coords')
-def get_coords():
+@app.route('/_get_bounds')
+def get_bounds():
 	name = request.args.get('name')
 	route = Route.query.filter_by(name=name, user=current_user).first()
-	info = RouteInfo.query.filter_by(route=route).all()
-	return_info = []
-	maxLat = info[0].latitude;
-	minLat = info[0].latitude;
-	maxLng = info[0].longitude;
-	minLng = info[0].longitude;
-	for point in info:
-		if point.latitude > maxLat:
-			maxLat = point.latitude
-		elif point.latitude < minLat:
-			minLat = point.latitude
-		if point.longitude > maxLat:
-			maxLng = point.longitude
-		elif point.longitude < minLat:
-			minLng = point.longitude
-		return_info.append([point.latitude, point.longitude, point.elevation])
-	print "\n\nmaxLat: {0} \nminLat: {1} \nmaxLng: {2} \nminLng: {3}\n\n".format(maxLat, minLat, maxLng, minLng)
-		
-		# print "({0},{1})".format(point.longitude, point.latitude)
-	print type(return_info)
-	print len(info)
-	return jsonify(result=return_info)
+	bounds = {"NElat": route.NElat, "NElng": route.NElng, "SWlat": route.SWlat, "SWlng": route.SWlng}
+	return jsonify(result=bounds)
 
 
 

@@ -20,7 +20,7 @@ function init() {
 }
 
 google.maps.event.addDomListener( window, 'load', init );
-
+google.maps.event.addDomListener( window, 'load', loadRoutes );
 
 function draw_route(routeCoords, map) {
     console.log("drawing route on map: " + map.getCenter());
@@ -34,42 +34,54 @@ function draw_route(routeCoords, map) {
     });
     route.setMap(map);
     var pos = new google.maps.LatLng(routeCoords[0].lat(), routeCoords[0].lng());
-    map.panTo(pos);
-    map.setZoom(14);
+    // map.panTo(pos);
+    // map.setZoom(14);
 }
-
-
-var arrCoords2 = [
-    new google.maps.LatLng(53.358647,-1.485686),
-    new google.maps.LatLng(53.358719,-1.485568),
-    new google.maps.LatLng(53.372861, -1.73216)
-];
 
 $(document).ready(function() {
     $('.route_name').bind('click', function() {
         var target = event.target || event.srcElement
-        $.getJSON($SCRIPT_ROOT + '/_get_coords', {
+        $.getJSON($SCRIPT_ROOT + '/_get_bounds', {
             // Send this to the server
             name: target.innerHTML
         }, function(data) {
             // Do this to whatever the server sends back  
-            var arrCoords = [];
-            var x = new google.maps.LatLng(data.result[3][0], data.result[3][1]);
-            
-            for (i = 0; i < data.result.length; i++) {
-                // console.log("add");
-                if ( i % 2 == 0) {
-                    arrCoords.push(new google.maps.LatLng(data.result[i][0], data.result[i][1]));
-                }     
-            }
-            console.log(arrCoords[15].lng() + ", " + arrCoords[15].lat());
-            draw_route(arrCoords, map);
+            var NE = new google.maps.LatLng(data.result["NElat"], data.result["NElng"]);
+            var SW = new google.maps.LatLng(data.result["SWlat"], data.result["SWlng"]);
+            console.log("NE: (" + data.result["NElat"] +", " + data.result["NElng"] + ")");
+            console.log("SW: (" + data.result["SWlat"] +", " + data.result["SWlng"] + ")");
+            var bounds =  new google.maps.LatLngBounds(SW, NE);
+            map.fitBounds(bounds);
         });
         
     });
 });
 
 
+function loadRoutes() {
+    $.getJSON($SCRIPT_ROOT + '/_get_routes', {
+    },
+    function(data) {
+        console.log(data.result);
+        for (route in data.result) {
+            // console.log(data.result[route]);
+            var Coords = [];
+            for (i = 0; i < data.result[route].length-3; i = i + 3) {
+                console.log('a');
+                Coords.push(new google.maps.LatLng(data.result[route][i][1], data.result[route][i][0]));
+            }
+            draw_route(Coords, map);
+        }
+    })
+};
 
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
 
 
