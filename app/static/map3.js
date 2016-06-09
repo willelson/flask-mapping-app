@@ -13,6 +13,7 @@ function init() {
 
     var mapOptions = {
         zoom: 10,
+        minZoom: 2,
         center: initialLocation,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -34,8 +35,7 @@ function draw_route(routeCoords, map) {
     });
     route.setMap(map);
     var pos = new google.maps.LatLng(routeCoords[0].lat(), routeCoords[0].lng());
-    // map.panTo(pos);
-    // map.setZoom(14);
+
 }
 
 $(document).ready(function() {
@@ -43,19 +43,34 @@ $(document).ready(function() {
         var target = event.target || event.srcElement
         $.getJSON($SCRIPT_ROOT + '/_get_bounds', {
             // Send this to the server
-            name: target.innerHTML
+            name: target.innerHTML,
+            id: target.id
         }, function(data) {
             // Do this to whatever the server sends back  
             var NE = new google.maps.LatLng(data.result["NElat"], data.result["NElng"]);
             var SW = new google.maps.LatLng(data.result["SWlat"], data.result["SWlng"]);
-            console.log("NE: (" + data.result["NElat"] +", " + data.result["NElng"] + ")");
-            console.log("SW: (" + data.result["SWlat"] +", " + data.result["SWlng"] + ")");
             var bounds =  new google.maps.LatLngBounds(SW, NE);
             map.fitBounds(bounds);
         });
-        
     });
 });
+
+
+$(document).ready(function() {
+    $('.fit_routes').bind('click', function() {
+        $.getJSON($SCRIPT_ROOT + '/_user_bounds', {
+        }, function(data) { 
+            var NE = new google.maps.LatLng(data.result["NElat"], data.result["NElng"]);
+            var SW = new google.maps.LatLng(data.result["SWlat"], data.result["SWlng"]);
+            console.log("fit bounds");
+            console.log("NE: (" + data.result["NElat"] +", " + data.result["NElng"] + ")");
+            console.log("SW: (" + data.result["SWlat"] +", " + data.result["SWlng"] + ")");
+            var bounds =  new google.maps.LatLngBounds(NE, SW);
+            console.log(bounds);
+            map.fitBounds(bounds);
+        });
+    });
+})
 
 
 function loadRoutes() {

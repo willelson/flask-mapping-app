@@ -103,7 +103,6 @@ def upload_file():
 	if request.method == 'POST':
 		file = request.files['file']
 		name = request.form['name']
-		print name, file
 		if file and allowed_file(file.filename) and name != None:
 			gpx = gpxpy.parse(file) 
 			for track in gpx.tracks: 
@@ -132,6 +131,7 @@ def upload_file():
 				new_route.SWlat = minLat
 				print "{0} | {1} | {2} | {3}".format(minLat, maxLng, minLng, maxLat)
 				db.session.add(new_route)
+				current_user.updateBounds()
 			db.session.commit()
 			print "Upload successfull"
 			return redirect(url_for('login'))
@@ -151,14 +151,27 @@ def get_routes():
 @app.route('/_get_bounds')
 def get_bounds():
 	name = request.args.get('name')
+	# route_id = request.form['id']
+	# print "id = {0}".format(route_id)
 	route = Route.query.filter_by(name=name, user=current_user).first()
 	bounds = {"NElat": route.NElat, "NElng": route.NElng, "SWlat": route.SWlat, "SWlng": route.SWlng}
+	return jsonify(result=bounds)
+
+
+@app.route('/_user_bounds')
+def user_bounds():
+	name = request.args.get('name')
+	user = User.query.filter_by(username=current_user.username).first()
+	print user.NElat
+	bounds = {"NElat": user.NElat, "NElng": user.NElng, "SWlat": user.SWlat, "SWlng": user.SWlng}
+	print "NE: ({0},{1})  |  SW: ({2},{3})".format(user.NElat, user.NElng, user.SWlat, user.SWlng)
 	return jsonify(result=bounds)
 
 
 
 
 # Get data for a users route
+# user = models.User.query.filter_by(username="will").first()
 # route = models.Route.query.filter_by(name="Test2", user=user).first()
 # info = models.RouteInfo.query.filter_by(route=route).all()
 

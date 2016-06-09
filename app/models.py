@@ -11,6 +11,30 @@ class User(db.Model):
 
     routes = db.relationship('Route', cascade="all, delete-orphan", backref='user', lazy='dynamic')
 
+    # Variables to describe the bounds of all the users routes
+    NElat = db.Column(db.Float)
+    NElng = db.Column(db.Float)
+    SWlat = db.Column(db.Float)
+    SWlng = db.Column(db.Float)
+
+    def updateBounds(self):
+        # NElng & SWlat not getting set
+        # print self.NElng, self.NElat, self.SWlng, self.SWlat
+        for route in Route.query.filter_by(user=self).all():
+            # print "route: {0} | {1} | {2} | {3}".format(route.NElat, route.NElng, route.SWlat, route.SWlng)
+            # print "SWlat: {0} | {1} | {2}".format(route.SWlat < self.SWlat, route.SWlat == None)
+            if route.NElat > self.NElat or self.NElat == None:
+                self.NElat = route.NElat 
+            if route.NElng < self.NElng or self.NElng == None:
+                self.NElng = route.NElng 
+            if route.SWlat < self.SWlat or self.SWlat == None:
+                self.SWlat = route.SWlat
+            if route.SWlng > self.SWlng or self.SWlng == None:
+                self.SWlng = route.SWlng
+            print "user: {0} | {1} | {2} | {3} \n".format(self.NElat, self.NElng, self.SWlat, self.SWlng)
+        print self.SWlat == None
+        print Route.query.filter_by(user=self).all()
+
     def __init__(self , username ,password , email):
         self.username = username
         self.password = generate_password_hash(password)
@@ -40,7 +64,6 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.id)
-
 
 
 class Route(db.Model):

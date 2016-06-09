@@ -18,8 +18,9 @@
     	{% if current_user.routes.all()|length > 0 %}
     		<h4>Routes</h4>
     		{% for route in current_user.routes %}
-    			<p><a href="#" class="route_name">{{ route.name }}</a></p>
+    			<p><a href="#" class="route_name" id="{{ route.id }}">{{ route.name }}</a></p>
     		{% endfor %}
+            <p><a href="#" class="fit_routes">Show all</a>
     	{% else %}
 		<h5>You have no routes</h5>				
 		{% endif %}
